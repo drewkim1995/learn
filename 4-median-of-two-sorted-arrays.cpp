@@ -4,58 +4,69 @@ class Solution {
     public:
         double findMedianSortedArrays(vector<int>& nums1, vector<int>& nums2)
         {
-            vector<int> * m;
-            vector<int> * n;
-
             double ret = 0.0;
             int combinedSize = nums1.size() + nums2.size();
+            int start1 = 0;
+            int start2 = 0;
+            int end1 = nums1.size() - 1;
+            int end2 = nums2.size() - 1;
 
-            if (nums1[0] <= nums2[0])
+            if (combinedSize == 1)
             {
-                m = &nums1;
-                n = &nums2;
+                if(nums1.size() == 0)
+                    ret = nums2[0];
+                else
+                    ret = nums1[0];
             }
-            else
-            {
-                m = &nums2;
-                n = &nums1;
-            }
 
-            // Even
-            if (combinedSize % 2 == 0)
+            while (combinedSize > 1)
             {
-                int index1 = combinedSize / 2;
-                int index2 = index1 + 1;
-                cout << index1 << " " << index2 << endl;
+                int comp1 = 0;
+                int comp2 = 0;
 
-                if (index1 < m->size())
+                // Get rid of lowest first
+                if (start1 < nums1.size())
                 {
-                    ret = m->at(index1);
+                    comp1 = nums1[start1];
+                }
+                else
+                {
+                    comp1 = nums2[start2++];
+                }
 
-                    if (index2 < m->size())
-                        ret = (ret + m->at(index2)) / 2;
+                if (start2 < nums2.size())
+                {
+                    comp2 = nums2[start2];
+
+                    if (comp1 < comp2)
+                        start1++;
                     else
-                        ret = (ret + n->at(index2 - m->size())) / 2;
+                        start2++;
                 }
                 else
                 {
-                    index1 -= m->size();
-                    index2 -= m->size();
-                    ret = (n->at(index1) + n->at(index2)) / 2;
+                    comp2 = nums1[++start1];
                 }
 
-            }
-            // Odd
-            else
-            {
-                // Get the 'middle'
-                int index = (combinedSize % 2) + 1;
-                cout << index << endl;
-                if (index < m->size())
-                    ret = m->at(index);
+                cout << "start1 = " << start1 << " | start2 = " << start2 << endl;
+                cout << "comp1 = " << comp1 << " | comp2 = " << comp2 << endl;
+
+                if (combinedSize % 2 == 0)
+                    ret = (double) (comp1 + comp2) / 2;
                 else
-                    ret = n->at(index - m->size());
+                {
+                    if (comp1 < comp2)
+                        ret = comp2;
+                    else
+                        ret = comp1;
+                }
+
+                // MAYBE FIX THIS PRETEND....
+                // Pretend as if we also got rid of highest numbers
+                combinedSize -= 2;
             }
+
+            cout << "combined size = " << combinedSize << " | ret = " << ret << endl;
 
             return ret;
         }
