@@ -7,33 +7,22 @@ class Solution
     public:
         bool isValid(string &s)
         {
-            bool valid = true;
-
             if (s.length() % 2 != 0)
-                valid = false;
-            else
+                return false;
+
+            for (auto c : s)
             {
-                for (int i = 0; i < s.length(); i++)
-                {
-                    if (s[i] == '(' ||
-                        s[i] == '{' ||
-                        s[i] == '[')
-                        bracket.push(s[i]);
-                    else if (!bracket.empty() &&
-                            ((s[i] == ')' && bracket.top() == '(') ||
-                             (s[i] == '}' && bracket.top() == '{') ||
-                             (s[i] == ']' && bracket.top() == '['))  )
-                    {
-                        bracket.pop();
-                    }
-                    else
-                    {
-                        valid = false;
-                        break;
-                    }
-                }
+                if (c == '(' || c == '{' || c == '[')
+                    bracket.push(c);
+                else if (bracket.empty())
+                    return false;
+                else if ((c == ')' && bracket.top() == '(') ||
+                         (c == '}' && bracket.top() == '{') ||
+                         (c == ']' && bracket.top() == '[')  )
+                    bracket.pop();
+                else return false;
             }
 
-            return (valid && bracket.empty());
+            return bracket.empty();
         }
 };
