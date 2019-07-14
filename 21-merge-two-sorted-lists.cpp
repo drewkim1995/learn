@@ -54,19 +54,10 @@ class Solution
             }
 
             // Merge whatever left over
-            while (l1 != NULL)
-            {
-                current->next = new ListNode(l1->val);
-                l1 = l1->next;
-                current = current->next;
-            }
-
-            while (l2 != NULL)
-            {
-                current->next = new ListNode(l2->val);
-                l2 = l2->next;
-                current = current->next;
-            }
+            if (l1 != NULL)
+                current->next = l1;
+            else if (l2 != NULL)
+                current->next = l2;
 
             return root;
         }
