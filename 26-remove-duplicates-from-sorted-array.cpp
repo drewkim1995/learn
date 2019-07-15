@@ -8,21 +8,17 @@ class Solution
             if (nums.size() < 1)
                 return 0;
 
-            int count = 1;
-            int prev = nums[0];
+            int count = 0;
 
             for (int i = 1; i < nums.size(); i++)
             {
-                if (nums[i] != prev)
+                if (nums[i] != nums[count])
                 {
-                    if (i != count)
-                        nums[count] = nums[i];
                     count++;
+                    nums[count] = nums[i];
                 }
-
-                prev = nums[i];
             }
 
-            return count;
+            return count + 1;
         }
 };
