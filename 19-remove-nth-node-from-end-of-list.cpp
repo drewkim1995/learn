@@ -14,32 +14,32 @@ class Solution
     public:
         ListNode* removeNthFromEnd(ListNode* head, int n)
         {
-            int length = 0;
-            ListNode * temp = head;
-            while (temp != NULL)
-            {
-                length++;
-                temp = temp->next;
-            }
+            ListNode *adv = head;
 
+            for (int i = 0; i < n; i++)
+                adv = adv->next;
 
-            if (n >= length)
+            ListNode *nth = head;
+
+            // Delete root
+            if (adv == NULL)
             {
-                ListNode * old = head->next;
+                nth = head->next;
                 delete head;
-                head = old;
+                head = nth;
             }
             else
             {
-                temp = head;
+                // Stops 1 before target
+                while (adv->next != NULL)
+                {
+                    adv = adv->next;
+                    nth = nth->next;
+                }
 
-                // One node before nth from end to delete
-                for (int i = 0; i < length-n-1; i++)
-                    temp = temp->next;
-
-                ListNode * nth = temp->next;
-                temp->next = nth->next;
-                delete nth;
+                ListNode *tmp = nth->next;
+                nth->next = tmp->next;
+                delete tmp;
             }
 
             return head;
