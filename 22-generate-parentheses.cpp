@@ -3,7 +3,8 @@
 class Solution
 {
     private:
-        void gen(vector<string> & v, string path, int open, int close, int current, const int n)
+        int n;
+        void gen(vector<string> & v, string path, int open, int close, int current)
         {
             if (open  > n/2 ||
                 close > n/2 ||
@@ -15,19 +16,29 @@ class Solution
                 return;
             }
 
-            gen(v, path + "(", open+1, close, current+1, n);
-            gen(v, path + ")", open, close+1, current+1, n);
+            // Improvements
+            if (open == close)
+                gen(v, path + "(", open+1, close, current+1);
+            else if (open == n/2)
+                gen(v, path + ")", open, close+1, current+1);
+            else
+            {
+                gen(v, path + "(", open+1, close, current+1);
+                gen(v, path + ")", open, close+1, current+1);
+            }
         }
 
     public:
-        vector<string> generateParenthesis(int n)
+        vector<string> generateParenthesis(int target)
         {
-            if (n < 1)
+            if (target < 1)
                 return {""};
+            else
+                n = target * 2;
 
             vector<string> ret;
 
-            gen(ret, "(", 1, 0, 1, n*2);
+            gen(ret, "(", 1, 0, 1);
 
             return ret;
         }
