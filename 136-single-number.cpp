@@ -2,8 +2,6 @@
 
 class Solution
 {
-    private:
-        unordered_map<int, int> check;
     public:
         int singleNumber(vector<int>& nums)
         {
