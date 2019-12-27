@@ -5,13 +5,14 @@ class Solution
     private:
         vector<vector<int>> ret;
 
-        void combo(vector<int>& candidates, vector<int> theory, int tailIndex, int target)
+        void combo(vector<int> &candidates, vector<int> &theory, int tailIndex, int target)
         {
             target = target - candidates[tailIndex];
             if (target == 0)
             {
                 theory.push_back(candidates[tailIndex]);
                 ret.push_back(theory);
+                theory.pop_back();
                 return;
             }
             // Testing against smallest possible number
@@ -24,6 +25,7 @@ class Solution
             for (tailIndex; tailIndex >= 0; tailIndex--)
                 combo(candidates, theory, tailIndex, target);
 
+            theory.pop_back();
             return;
         }
 
