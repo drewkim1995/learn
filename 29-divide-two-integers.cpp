@@ -35,6 +35,10 @@ class Solution
                 divisor++;
             }
 
+            // No quotient if divisor is greater than dividend
+            if (divisor > dividend)
+                return 0;
+
             double result = 0;
             double temp = dividend;
             double origDivisor = divisor;
