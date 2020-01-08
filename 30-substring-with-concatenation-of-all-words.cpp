@@ -1,50 +1,57 @@
 // https://leetcode.com/problems/substring-with-concatenation-of-all-words/
 
+// Found this solution and added some comments
+// https://leetcode.com/problems/substring-with-concatenation-of-all-words/discuss/13658/
+
 class Solution
 {
     public:
         vector<int> findSubstring(string& s, vector<string>& words)
         {
+            // Fringe Case
             if (s.empty() || words.empty())
                 return {};
 
-            const int wordLength = words[0].length();
-            vector<int> ret;
-            int lastIndex = s.length() - ((words.size() - 1) * wordLength);
+            // Record the expected times of each word
+            unordered_map<string, int> counts;
+            for (string word : words)
+                counts[word]++;
 
-            sort (words.begin(), words.end());
+            vector<int> indexes;
+            int n = s.length();
+            int num = words.size();
+            int len = words[0].length();
+            int lastIndex = n - (num * len) + 1;
 
-            // Iterate through each letter until there are less characters than the total in words
+            // Iterate each letter until there are less characters than the total in words
             for (int startIndex = 0; startIndex < lastIndex; startIndex++)
             {
-                int count = 0;
-                vector<string> temp;
+                unordered_map<string, int> seen;
+                int matchCount;
 
-                // Build a vector of strings to compare against
-                for (int i = 0; i < (words.size() * wordLength); i+= wordLength)
+                // Iterate through strings to compare
+                for (matchCount = 0; matchCount < num; matchCount++)
                 {
-                    string sub = s.substr(startIndex + i, wordLength);
-                    //cout << sub << " ";
-                    temp.push_back(sub);
-                }
-                //cout << endl;
+                    string word = s.substr(startIndex + matchCount * len, len);
 
-                sort (temp.begin(), temp.end());
+                    // Find the String
+                    if (counts.find(word) != counts.end())
+                    {
+                        seen[word]++;
 
-                // Compare both sorted vectors for a match
-                for (int i = 0; i < words.size(); i++)
-                {
-                    if (temp[i] == words[i])
-                        count++;
+                        // More than expected, stop the check
+                        if (seen[word] > counts[word])
+                            break;
+                    }
+                    // Unexpected String, stop the check
                     else
                         break;
                 }
 
-                // Store the index if sorted vectors match
-                if (count == words.size())
-                    ret.push_back(startIndex);
+                if (matchCount == num)
+                    indexes.push_back(startIndex);
             }
 
-            return ret;
+            return indexes;
         }
 };
