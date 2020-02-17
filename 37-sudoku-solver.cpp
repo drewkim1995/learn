@@ -49,6 +49,13 @@ class Solution
             set<char> colCand[9];
             set<char> boxCand[9];
 
+            for (int i = 0; i < 9; i++)
+            {
+                rowCand[i] = {'1', '2', '3', '4', '5', '6', '7', '8', '9'};
+                colCand[i] = {'1', '2', '3', '4', '5', '6', '7', '8', '9'};
+                boxCand[i] = {'1', '2', '3', '4', '5', '6', '7', '8', '9'};
+            }
+
             // Getting Candidates
             for (int col = 0; col < 9; col++)
             {
@@ -58,8 +65,8 @@ class Solution
                     int boxIndex = getBoxIndex(row, col);
                     if (colVal != '.')
                     {
-                        colCand[col].insert(colVal);
-                        boxCand[boxIndex].insert(colVal);
+                        colCand[col].erase(colVal);
+                        boxCand[boxIndex].erase(colVal);
                     }
                     else
                         spaces.insert(make_pair(row, col));
@@ -67,19 +74,31 @@ class Solution
                     // Getting Rows
                     char rowVal = board[col][row];
                     if (rowVal != '.')
-                        rowCand[col].insert(rowVal);
+                        rowCand[col].erase(rowVal);
 
                 }
             }
 
-            // Print Cell [0,2]
-            auto result = rowCand[0];
-            result.insert(colCand[2].begin(), colCand[2].end());
-            result.insert(boxCand[0].begin(), boxCand[0].end());
-            cout << "Cell[0,2] = {";
-            for (auto n : result)
+            /* Print Cell [2,0]
+            set<char> temp1, temp2, result;
+            set_intersection(rowCand[0].begin(), rowCand[0].end(), colCand[3].begin(), colCand[3].end(), inserter(temp1, temp1.begin()));
+            set_intersection(colCand[3].begin(), colCand[3].end(), boxCand[1].begin(), boxCand[1].end(), inserter(temp2, temp2.begin()));
+            set_intersection(temp1.begin(), temp1.end(), temp2.begin(), temp2.end(), inserter(result, result.begin()));
+            cout << "Cell[2,0] = {";
+            cout << endl;
+            for (auto n : rowCand[0])
                 cout << n << ", ";
-            cout << "}" << endl;
+            cout << endl;
+            for (auto n : colCand[3])
+                cout << n << "| ";
+            cout << endl;
+            for (auto n : boxCand[1])
+                cout << n << "+ ";
+            cout << endl;
+            for (auto n : result)
+                cout << n << "& ";
+            cout << endl;
+            cout << "}" << endl;*/
 
             while(!spaces.empty())
             {
@@ -90,24 +109,27 @@ class Solution
                     char val = board[row][col];
                     if (val == '.')
                     {
-                        set<char> options = {'1', '2', '3', '4', '5', '6', '7', '8', '9'};
                         int box = getBoxIndex(row, col);
 
-                        auto combo = rowCand[row];
-                        combo.insert(colCand[col].begin(), colCand[col].end());
-                        combo.insert(boxCand[box].begin(), boxCand[box].end());
+                        set<char> temp1, temp2, result;
+                        set_intersection(rowCand[row].begin(), rowCand[row].end(), colCand[col].begin(), colCand[col].end(), inserter(temp1, temp1.begin()));
+                        set_intersection(colCand[col].begin(), colCand[col].end(), boxCand[box].begin(), boxCand[box].end(), inserter(temp2, temp2.begin()));
+                        set_intersection(temp1.begin(), temp1.end(), temp2.begin(), temp2.end(), inserter(result, result.begin()));
+                        //cout << "Cell[2,0] = {";
+                        //for (auto n : result)
+                        //    cout << n << ", ";
 
-                        for (auto num : combo)
-                            options.erase(num);
+                        //cout << "Options: " << result.size() << " | " << row << "," << col << endl;
+                        //cout << boxCand[box].size() << endl;
 
                         // Inserting to original board
-                        if (options.size() == 1)
+                        if (result.size() == 1)
                         {
-                            int ins = *options.begin();
+                            int ins = *result.begin();
                             board[row][col] = ins;
-                            boxCand[box].insert(ins);
-                            rowCand[row].insert(ins);
-                            colCand[col].insert(ins);
+                            boxCand[box].erase(ins);
+                            rowCand[row].erase(ins);
+                            colCand[col].erase(ins);
                             spaces.erase(indicies);
                         }
                     }
