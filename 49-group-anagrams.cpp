@@ -5,21 +5,24 @@ class Solution
     public:
         vector<vector<string>> groupAnagrams(vector<string>& strs)
         {
-            vector<vector<string>> ret;
-            unordered_map<string, vector<string>> mymap;
+            unordered_map<string, int>  indices;
+            vector<vector<string>>      result;
 
             for (auto s : strs)
             {
                 string key = s;
                 sort(key.begin(), key.end());
 
-                // Find in Map
-                mymap[key].push_back(s);
+                // Unordered map has no dupes, count is 1 if found or 0 if not
+                if (indices.count(key))
+                    result[indices[key]].push_back(s);
+                else
+                {
+                    result.push_back(vector<string>(1, s));
+                    indices[key] = result.size() - 1;
+                }
             }
 
-            for (auto v : mymap)
-                ret.push_back(v.second);
-
-            return ret;
+            return result;
         }
 };
