@@ -32,31 +32,23 @@ class Solution
 class Solution
 {
     private:
-        int target = 0;
-        bool findPathSum(TreeNode* root, int current)
+        bool dfs(TreeNode* node, int sum)
         {
-            bool ret = false;
-            current += root->val;
+            sum -= node->val;
 
-            if (root->left == NULL && root->right == NULL)
-                return current == target;
-
-            if (root->left != NULL)
-                ret = findPathSum(root->left, current);
-            if (root->right != NULL)
-                ret = ret ? ret : findPathSum(root->right, current);
-
-            return ret;
+            if (sum == 0 && node->left == NULL && node->right == NULL)
+                return true;
+            if (node->left != NULL && dfs(node->left, sum))
+                return true;
+            if (node->right != NULL && dfs(node->right, sum))
+                return true;
+            return false;
         }
-
     public:
         bool hasPathSum(TreeNode* root, int sum)
         {
             if (root == NULL)
                 return false;
-
-            target = sum;
-
-            return findPathSum(root, 0);
+            return dfs(root, sum);
         }
 };
