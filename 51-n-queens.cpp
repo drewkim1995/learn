@@ -1,76 +1,57 @@
 // https://leetcode.com/problems/n-queens/
-
-// Attempting Row by Row solution so we don't need to keep
-// track of row number/count as we'll know because of vector.push_back()
-
 // Note: Avoid using vector<bool> as it is not a STL container
 
 class Solution
 {
     private:
         vector<vector<string>> result;
-        unsigned char * qCol;
-        unsigned char * temp;
 
-        void backtrack(const int n, const int qColSize)
+        void solveNQueens(vector<string> & theory, const int n, const int row)
         {
-            // Vertical Check board is valid
-            memcpy(temp, qCol, sizeof(unsigned char) * qColSize);
-            sort(temp, temp+qColSize);
-            for (int i = 1; i < qColSize; i++)
-            {
-                if (temp[i] == temp[i-1])
-                    return;
-            }
-
-            // Diagonal Check board
-            for (int row = 0; row < qColSize; row++)
-            {
-                // Top-left to bottom-right
-                int col = qCol[row] + 1;
-                for (int next = row+1; next < qColSize; next++, col++)
-                    if (col == qCol[next])
-                        return;
-
-                // Top-right to bottom-left
-                col = qCol[row] + 1;
-                for (int next = row-1; next >= 0; next--, col++)
-                    if (col == qCol[next])
-                        return;
-            }
-
             // Insert solution
-            if (n == qColSize)
+            if (n == row)
             {
-                vector<string> solution (n, string(n, '.'));
-
-                // Generate string here
-                for (int i = 0; i < n; i++)
-                    solution[i][qCol[i]] = 'Q';
-
-                result.push_back(solution);
+                result.push_back(theory);
                 return;
             }
 
             // Inserting a queen
             for (int col = 0; col < n; col++)
             {
-                qCol[qColSize] = col;
-                backtrack(n, qColSize+1);
-                // Don't need to 'reset' since we keep track via qColSize
+                if (isValid(theory, n, row, col))
+                {
+                    theory[row][col] = 'Q';
+                    solveNQueens(theory, n, row+1);
+                    theory[row][col] = '.';
+                }
             }
+        }
 
-            return;
+        bool isValid(vector<string> & theory, const int n, const int row, const int col)
+        {
+            // Column Vertical Check board
+            for (int i = 0; i < row; i++)
+                if (theory[i][col] == 'Q')
+                    return false;
+
+            //  45° Diagonal (BL to TR) Check board
+            for (int i = row - 1, j = col - 1; i >= 0 && j >= 0; --i, --j)
+                if (theory[i][j] == 'Q')
+                    return false;
+
+            // 135° Diagonal (TL to BR) Check board
+            for (int i = row - 1, j = col + 1; i >= 0 && j < n; --i, ++j)
+                if (theory[i][j] == 'Q')
+                    return false;
+
+            return true;
         }
 
     public:
         vector<vector<string>> solveNQueens(const int n)
         {
-            // Allocated on the stack implies that it will automatically be freed when the stack unwinds.
-            qCol = (unsigned char *) alloca(sizeof(unsigned char) * n);
-            temp = (unsigned char *) alloca(sizeof(unsigned char) * n);
-
-            backtrack(n, 0);
+            vector<string> theory(n, string(n, '.'));
+            solveNQueens(theory, n, 0);
             return result;
         }
 };
