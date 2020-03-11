@@ -7,34 +7,12 @@ class Solution
 {
     private:
         vector<vector<string>> result;
-        void backtrack(int n, vector<int> & qCol)
+        void backtrack(int n, vector<int> & qCol, vector<vector<bool>> & board)
         {
-            // Vertical Check board is valid
-            vector<int> temp = qCol;
-            sort(temp.begin(), temp.end()); // unique needs sorted vector
-            auto it = unique(temp.begin(), temp.end());
-            bool wasUnique = (it == temp.end());
-            if (!wasUnique)
-                return;
-
-            // Diagonal Check board
-            for (int row = 0; row < qCol.size(); row++)
-            {
-                // Top-left to bottom-right
-                int col = qCol[row] + 1;
-                for (int next = row+1; next < qCol.size(); next++, col++)
-                    if (col == qCol[next])
-                        return;
-
-                // Top-right to bottom-left
-                col = qCol[row] + 1;
-                for (int next = row-1; next >= 0; next--, col++)
-                    if (col == qCol[next])
-                        return;
-            }
+            int size = qCol.size();
 
             // Insert solution
-            if (qCol.size() == n)
+            if (size == n)
             {
                 vector<string> solution;
 
@@ -51,21 +29,71 @@ class Solution
             }
 
             // Inserting a queen
-            for (int col = 0; col < n; col++)
+            int row = size;
+            int start = 0;
+            for (int col = start; col < n; col++)
             {
+                // Verify safe location to insert
+                if (!board[row][col])
+                    continue;
+
+                // Updated board
+                vector<vector<bool>> temp = board;
+                updateBoard(temp, false, n, row, col);
+
+                // Actual Inserting queen
                 qCol.push_back(col);
-                backtrack(n, qCol);
+                backtrack(n, qCol, temp);
                 qCol.pop_back();
+
+                //updateBoard(board, true, n, row, col);
             }
 
             return;
+        }
+        void updateBoard(vector<vector<bool>> & board, bool val, int n, int row, int col)
+        {
+            // Updated board
+            for (int i = 0; i < n; i++)
+            {
+                // Vert and Horz
+                board[row][i] = val;
+                board[i][col] = val;
+
+                // Diagonal Top-Left
+                int r = row-i;
+                int c = col-i;
+                if(r >= 0 && c >= 0)
+                    board[r][c] = val;
+
+                // Diagonal Top-Right
+                //r = row-i;
+                c = col+i;
+                if(r >= 0 && c <= n-1)
+                    board[r][c] = val;
+
+                // Diagonal Bottom-Left
+                r = row+i;
+                c = col-i;
+                if(r <= n-1 && c >= 0)
+                    board[r][c] = val;
+
+                // Diagonal Bottom-Right
+                r = row+i;
+                c = col+i;
+                if(r <= n-1 && c <= n-1)
+                    board[r][c] = val;
+            }
         }
 
     public:
         vector<vector<string>> solveNQueens(int n)
         {
+            vector<bool> row(n, true);
+            vector<vector<bool>> board (n, row);
+
             vector<int> queensCol;
-            backtrack(n, queensCol);
+            backtrack(n, queensCol, board);
             return result;
         }
 };
