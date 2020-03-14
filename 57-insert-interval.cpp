@@ -6,12 +6,28 @@ class Solution
         vector<vector<int>> insert(vector<vector<int>>& intervals, vector<int>& newInterval)
         {
             vector<vector<int>> result;
-            intervals.push_back(newInterval);
-            sort(intervals.begin(), intervals.end());
             int size = intervals.size();
 
-            if (size == 0)
-                return result;
+            // No longer doing a sort then insert
+            for (int i = 0; i < size; ++i)
+            {
+                if (intervals[i][0] == newInterval[0])
+                {
+                    if (intervals[i][1] < newInterval[1])
+                        intervals.insert(intervals.begin() + i+1, newInterval);
+                    else
+                        intervals.insert(intervals.begin() + i, newInterval);
+                    break;
+                }
+                else if (intervals[i][0] > newInterval[0])
+                {
+                    intervals.insert(intervals.begin() + i, newInterval);
+                    break;
+                }
+            }
+
+            if (intervals.size() == size++)
+                intervals.push_back(newInterval);
 
             vector<int> temp = intervals[0];
 
