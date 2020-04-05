@@ -17,19 +17,10 @@ class Solution
     public:
         void moveZeroes(vector<int>& nums)
         {
-            int size = nums.size();
-            if (size < 2)
-                return;
-
-            // Remove Elements
-            for (int i = 0; i < nums.size(); ++i)
-                if (nums[i] == 0)
-                    nums.erase(nums.begin() + i--);
-
-            size = size - nums.size();
-
-            // Add Zeroes
-            for (int i = 0; i < size; ++i)
-                nums.push_back(0);
+            // Remove doesn't actually delete elements, just pushes them to the end of container
+            vector <int>::iterator pos;
+            pos = remove (nums.begin(), nums.end(), 0);
+            for(auto i = pos; i != nums.end(); ++i)
+                *i = 0;
         }
 };
