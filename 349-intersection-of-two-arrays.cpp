@@ -7,7 +7,10 @@ class Solution
     public:
         vector<int> intersection(vector<int>& nums1, vector<int>& nums2)
         {
-            if (nums1.size() == 0 || nums2.size() == 0)
+            int size1 = nums1.size();
+            int size2 = nums2.size();
+
+            if (size1 == 0 || size2 == 0)
                 return result;
 
             // Sort numbers first
@@ -18,7 +21,7 @@ class Solution
             int one = 0;
             int two = 0;
 
-            while (one < nums1.size() && two < nums2.size())
+            while (one < size1 && two < size2)
             {
                 if (nums1[one] == nums2[two])
                 {
@@ -27,16 +30,8 @@ class Solution
                     result.push_back(intersect);
 
                     // Find next value that's not the same now.
-                    while (++one < nums1.size())
-                    {
-                        if (nums1[one] != intersect)
-                            break;
-                    }
-                    while (++two < nums2.size())
-                    {
-                        if (nums2[two] != intersect)
-                            break;
-                    }
+                    while (++one < size1 && nums1[one] == intersect){}
+                    while (++two < size2 && nums2[two] == intersect){}
                 }
                 else if (nums1[one] > nums2[two])
                     two++;
