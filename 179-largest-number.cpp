@@ -3,32 +3,23 @@
 class Solution
 {
     public:
-        static bool largest(int i, int j)
+        static bool compare(string a, string b)
         {
-            string ij = to_string(i) + to_string(j);
-            string ji = to_string(j) + to_string(i);
-
-            for (int iter = 0; iter < ij.length(); iter++)
-            {
-                if (ij[iter] != ji[iter])
-                    return ij[iter] > ji[iter];
-            }
-            return false;
-
+            return a+b > b+a;
         }
         string largestNumber(vector<int>& nums)
         {
+            vector<string> numbers;
+            for (int n : nums)
+                numbers.push_back(to_string(n));
+
+            sort(numbers.begin(), numbers.end(), compare);
+
             string res = "";
 
-            sort(nums.begin(), nums.end(), largest);
+            for(auto x : numbers)
+                res += x;
 
-            for(auto x : nums)
-            {
-                if (res == "0" && x == 0)
-                    continue;
-                res += to_string(x);
-            }
-
-            return res;
+            return res[0] == '0' ? "0" : res;
         }
 };
