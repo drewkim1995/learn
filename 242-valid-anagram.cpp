@@ -9,12 +9,17 @@ class Solution
             if (s.length() != t.length())
                 return false;
 
-            // Sort strings
-            sort(s.begin(), s.end());
-            sort(t.begin(), t.end());
+            int counter[26] = {0};
 
+            // Hash map, this is using lowercase only
             for(int i = 0; i < s.length(); i++)
-                if (s[i] != t[i])
+            {
+                counter[s[i] - 'a']++;
+                counter[t[i] - 'a']--;
+            }
+
+            for(auto count : counter)
+                if (count != 0)
                     return false;
 
             return true;
