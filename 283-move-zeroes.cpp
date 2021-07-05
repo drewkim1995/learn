@@ -3,22 +3,10 @@
 class Solution {
 public:
     void moveZeroes(vector<int>& nums) {
-        int index = 0;
-        int count = 0;
-        int size = nums.size();
-
-        if (size == 0) return;
-
-        for (int i = 0; i < size; ++i) {
-            if (nums[i] == 0) {
-                ++count;
-            } else {
-                nums[index++] = nums[i];
+        for (int lastNonZeroFoundAt = 0, cur = 0; cur < nums.size(); cur++) {
+            if (nums[cur] != 0) {
+                swap(nums[lastNonZeroFoundAt++], nums[cur]);
             }
-        }
-
-        for (index; index < size; ++index) {
-            nums[index] = 0;
         }
     }
 };
