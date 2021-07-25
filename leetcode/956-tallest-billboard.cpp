@@ -12,35 +12,14 @@ public:
     int tallestBillboard(vector<int>& rods) {
         // Could convert into arr instead of vector
         size = rods.size();
-        int dupes = 0;
-        vector<int> sortedRods;
         if (size > 1) {
-            sort(rods.begin(), rods.end(), greater<int>());
             int left_count = 0, right_count = 0;
-            for (int i = 0; i < size-1; ++i) {
-                int num = rods[i];
-                int numNext = rods[i+1];
-                if (num != numNext) {
-                    left_count += num;
-                    sortedRods.push_back(num);
+            sort(rods.begin(), rods.end(), greater<int>());
+            for (auto num : rods) left_count += num;
 
-                    // Add the last num
-                    if (i == size-2) {
-                        left_count += numNext;
-                        sortedRods.push_back(numNext);
-                    }
-                }
-                else {
-                    dupes += num;
-                    ++i;
-                }
-            }
-
-            size = sortedRods.size();
-            search(sortedRods, 0, left_count, right_count);
-
-            if (retVal != 0 || size == 0) retVal += dupes;
+            search(rods, 0, left_count, right_count);
         }
+
         return retVal;
     }
 
@@ -58,7 +37,8 @@ private:
         // Error
         if (lIter == size) return;
 
-        for (int i = lIter; i < size; ++i) {
+        // Change the smallest number first to return largest count first
+        for (int i = size-1; i >= lIter; --i) {
             // Option 1: Move number to RHS
             search(l, i + 1, lCount - l[i], rCount + l[i]);
 
@@ -68,3 +48,15 @@ private:
 
     }
 };
+/*
+[1,2,3,6]
+[1,2,3,4,5,6]
+[1,2]
+[5]
+[100,100]
+[1,5,100,100,5,1]
+[1,5,100,100,100,100,5,1]
+[1,2,3,3,3,2,1]
+[1,3,6,5,3,1,3,74,133,999,1,74,345,123,346,536,313,345,7,235]
+[1,2,4,8,16,32,64,128,256,512,50,50,50,150,150,150,100,100,100,123]
+*/
