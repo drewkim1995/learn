@@ -1,4 +1,3 @@
-# leetcode
-My storage of online coding challenges.
+# Learn
 
-The code was compiled and run on leetcode.
+A repo to hold the things that I have learnt.
