@@ -1,126 +1,43 @@
 // https://leetcode.com/problems/find-median-from-data-stream/
 
-// std::lists version
-// Too slow at searches.
+// TWO HEAP INTUITION : We have to consider middle element/s where all other elements are sorted as data stream come.
+// Heaps come into picture with less time complexity to achieve this.
+// So, we keep two heaps, one min heap and one max heap and keep a track of middle elements by balancing each heap.
+
 class MedianFinder {
 private:
-    int size = 0;
-    list<int> numbers;
-
-public:
     /** initialize your data structure here. */
-    MedianFinder() {
-    }
-
-    void addNum(int num) {
-        numbers.push_back(num);
-        ++size;
-    }
-
-    double findMedian() {
-        int iter = 0;
-        int current = 0, prev = 0;
-        int index = size / 2;
-        list <int> :: iterator it;
-
-        numbers.sort();
-        for(it = numbers.begin(); it != numbers.end() && iter <= index; ++it, ++iter) {
-            prev = current;
-            current = *it;
-        }
-
-        if (size % 2 == 0)
-            return (double) (prev + current) / 2;
-        return current;
-    }
-};
-
-/**
- * Your MedianFinder object will be instantiated and called as such:
- * MedianFinder* obj = new MedianFinder();
- * obj->addNum(num);
- * double param_2 = obj->findMedian();
- */
-
- // Binary Search Tree (BST) Solution:
- // Too slow at inserts.
- /*
-class MedianFinder {
-private:
-    struct node {
-        int data;
-        node * left;
-        node * right;
-    };
-
-    node * root = NULL;
-    int size = 0;
-    double median = 0;
-    int prev = 0;
-
-    node * insert(node * t, const int x) {
-        if(t == NULL) {
-            t = new node;
-            t->data = x;
-            t->left = t->right = NULL;
-        }
-        else if(x <= t->data)
-            t->left = insert(t->left, x);
-        else if(x > t->data)
-            t->right = insert(t->right, x);
-        return t;
-    }
-
-    void getMedian(node * t, int & current, const int target) {
-        if (t == NULL || current > target)
-            return;
-
-        getMedian(t->left, current, target);
-
-        // Check itself
-        if (current == target) {
-            if (++current > 0 && size % 2 == 0)
-                median = (double) (prev + t->data) / 2;
-            else
-                median = t->data;
-            return;
-        }
-        prev = t->data;
-        ++current;
-
-        getMedian(t->right, current, target);
-    }
-
-    // Debugging purposes
-    void inorder(node * t) {
-        if(t == NULL)
-            return;
-        inorder(t->left);
-        cout << t->data << " ";
-        inorder(t->right);
-    }
+    priority_queue<int, vector<int>, greater<int> > minHeap;    // Elements in decreasing order (max to min)
+	priority_queue<int> maxHeap;                                // Elements in increasing order (min to max)
 
 public:
-    // initialize your data structure here.
-    MedianFinder() {
-    }
-
     void addNum(int num) {
-        root = insert(root, num);
-        ++size;
+        if (maxHeap.empty() or maxHeap.top() > num) {
+			maxHeap.push(num);
+		} else {
+			minHeap.push(num);
+		}
+
+		if (maxHeap.size() > minHeap.size() + 1) {
+			minHeap.push(maxHeap.top());
+			maxHeap.pop();
+		} else if (minHeap.size() > maxHeap.size() + 1) {
+			maxHeap.push(minHeap.top());
+			minHeap.pop();
+		}
     }
 
     double findMedian() {
-        int current = 0;
-        getMedian(root, current, size/2);
-        return median;
+        if (maxHeap.size() == minHeap.size()) {
+			if (maxHeap.empty()) {
+				return 0;
+			} else {
+				double avg = (maxHeap.top() + minHeap.top()) / 2.0;
+				return avg;
+			}
+
+		} else {
+			return maxHeap.size() > minHeap.size() ? maxHeap.top() : minHeap.top();
+		}
     }
 };
-*/
-
-/**
- * Your MedianFinder object will be instantiated and called as such:
- * MedianFinder* obj = new MedianFinder();
- * obj->addNum(num);
- * double param_2 = obj->findMedian();
- */
