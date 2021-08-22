@@ -1,5 +1,50 @@
 // https://leetcode.com/problems/find-median-from-data-stream/
 
+// std::lists version
+// Too slow at searches.
+class MedianFinder {
+private:
+    int size = 0;
+    list<int> numbers;
+
+public:
+    /** initialize your data structure here. */
+    MedianFinder() {
+    }
+
+    void addNum(int num) {
+        numbers.push_back(num);
+        ++size;
+    }
+
+    double findMedian() {
+        int iter = 0;
+        int current = 0, prev = 0;
+        int index = size / 2;
+        list <int> :: iterator it;
+
+        numbers.sort();
+        for(it = numbers.begin(); it != numbers.end() && iter <= index; ++it, ++iter) {
+            prev = current;
+            current = *it;
+        }
+
+        if (size % 2 == 0)
+            return (double) (prev + current) / 2;
+        return current;
+    }
+};
+
+/**
+ * Your MedianFinder object will be instantiated and called as such:
+ * MedianFinder* obj = new MedianFinder();
+ * obj->addNum(num);
+ * double param_2 = obj->findMedian();
+ */
+
+ // Binary Search Tree (BST) Solution:
+ // Too slow at inserts.
+ /*
 class MedianFinder {
 private:
     struct node {
@@ -56,7 +101,7 @@ private:
     }
 
 public:
-    /** initialize your data structure here. */
+    // initialize your data structure here.
     MedianFinder() {
     }
 
@@ -71,6 +116,7 @@ public:
         return median;
     }
 };
+*/
 
 /**
  * Your MedianFinder object will be instantiated and called as such:
